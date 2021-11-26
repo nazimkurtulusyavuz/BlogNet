@@ -24,7 +24,6 @@ namespace BlogNet
                 var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
                 await ApplicationDbContextSeed.SeedRolesAndUsers(roleManager, userManager);
                 await ApplicationDbContextSeed.SeedCategoriesAndPostsAsync(db);
-
             }
             host.Run();
         }

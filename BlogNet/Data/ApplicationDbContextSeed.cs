@@ -15,7 +15,7 @@ namespace BlogNet.Data
             var user = new ApplicationUser()
             {
                 Email = "admin@example.com",
-                UserName = "admin@example.com",
+                UserName = "admin@example.com", 
                 EmailConfirmed = true
             };
             await userManager.CreateAsync(user, "P@ssword1");
@@ -24,10 +24,9 @@ namespace BlogNet.Data
         public static async Task SeedCategoriesAndPostsAsync(ApplicationDbContext context)
         {
             var author = await context.Users.FirstOrDefaultAsync(x => x.UserName == "admin@example.com");
-            if (author == null || await context.Categories.AnyAsync()) return;
-            {
 
-            }
+            if (author == null || await context.Categories.AnyAsync()) return;
+            
             var cat1 = new Category()
             {
                 Name = "General",

@@ -2,7 +2,7 @@
 * Add-Migration InitialCreate -o Data/Migrations
 * Update-Database
 
-# Resources
+## Resources
 
 * https://startbootstrap.com/template/blog-home
 * https://startbootstrap.com/template/blog-post
