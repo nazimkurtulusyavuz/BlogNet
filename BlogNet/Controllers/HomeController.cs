@@ -15,6 +15,8 @@ namespace BlogNet.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly ApplicationDbContext _context;
+        private const int POSTS_PER_PAGE = 3;
+
 
         public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
         {
@@ -22,16 +24,40 @@ namespace BlogNet.Controllers
             _context = context;
         }
 
+        [Route("c/{slug}", Name = "IndexWithSlug")]
         [Route("")]
-        [Route("c/{slug}")]
-        public IActionResult Index(string slug)
+        public IActionResult Index(string slug, int pn = 1)
         {
+            ViewBag.Slug = slug;
             IQueryable<Post> posts = _context.Posts;
             if (!string.IsNullOrEmpty(slug))
-            {
                 posts = posts.Where(x => x.Category.Slug == slug);
-            }
-            return View(posts.ToList());
+
+            int totalItems = posts.Count();
+            int totalPages = (int)Math.Ceiling((decimal)totalItems / POSTS_PER_PAGE);
+            posts = posts.OrderByDescending(x => x.CreatedTime).Skip((pn - 1) * POSTS_PER_PAGE).Take(POSTS_PER_PAGE);
+
+            var postsList = posts.ToList();
+
+            var vm = new HomeViewModel()
+            {
+                Posts = postsList,
+
+                PaginationInfo = new PaginationViewModel()
+                {
+                    CurrentPage = pn,
+                    HasNewer = pn > 1,
+                    HasOlder = pn < totalPages,
+                    ItemsOnPage = postsList.Count(),
+                    TotalItems = totalItems,
+                    TotalPages = totalPages,
+                    ItemsPerPage = POSTS_PER_PAGE,
+                    ResultsStart = (pn-1) * POSTS_PER_PAGE + 1,
+                    ResultsEnd = (pn - 1) * POSTS_PER_PAGE + postsList.Count()
+                }
+            };
+            return View(vm);
+
         }
 
         [Route("p/{slug}")]

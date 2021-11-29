@@ -17,7 +17,7 @@
            asp-route-slug="@Model.Category.Slug">@Model.Category.Name</a>
     </header>
     <!-- Preview image figure-->
-    <figure class="mb-4"><img class="img-fluid rounded" src="~/uploads/@Model.PhotoPath" alt="@Model.Title" /></figure>
+    <figure class="mb-4"><img class="w-100 rounded" src="~/uploads/@Model.PhotoPath" alt="@Model.Title" /></figure>
     <!-- Post content-->
     <section class="mb-5">
         @Html.Raw(Model.Content)
