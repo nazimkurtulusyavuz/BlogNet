@@ -12,3 +12,4 @@
 ## Useful Links
 
 * https://github.com/dotnet-architecture/eShopOnWeb
+* https://getbootstrap.com/docs/4.6/components/modal/
