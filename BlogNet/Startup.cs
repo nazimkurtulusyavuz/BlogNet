@@ -36,7 +36,9 @@ namespace BlogNet
             services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
             services.AddSingleton<UrlService>();
+            services.AddScoped<PhotoService>();
 
             services.AddControllersWithViews();
         }

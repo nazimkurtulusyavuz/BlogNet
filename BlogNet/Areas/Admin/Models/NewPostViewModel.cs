@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using BlogNet.Attributes;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
@@ -19,7 +20,8 @@ namespace BlogNet.Areas.Admin.Models
         public string Content { get; set; }
 
         public bool IsPublished { get; set; } = true;
-
+        
+        [PostPhoto(MaxSizeMB = 1)]  // Buraya yazılan MaxSizeMB PostPhotoAttribute'dakini ezer.
         public IFormFile FeaturedImage { get; set; }
 
         [Required]

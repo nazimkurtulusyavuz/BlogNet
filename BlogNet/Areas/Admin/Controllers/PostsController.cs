@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace BlogNet.Areas.Admin.Controllers
@@ -19,12 +20,14 @@ namespace BlogNet.Areas.Admin.Controllers
         private readonly ApplicationDbContext _db;
         private readonly IWebHostEnvironment _env;
         private readonly UrlService _urlService;
+        private readonly PhotoService _photoService;
 
-        public PostsController(ApplicationDbContext db, IWebHostEnvironment env, UrlService urlService)
+        public PostsController(ApplicationDbContext db, IWebHostEnvironment env, UrlService urlService, PhotoService photoService)
         {
             _db = db;
             _env = env;
             _urlService = urlService;
+            _photoService = photoService;
         }
         public IActionResult Index()
         {
@@ -34,26 +37,15 @@ namespace BlogNet.Areas.Admin.Controllers
                 .ToList());
         }
 
-        [HttpPost]
+        [HttpPost, ValidateAntiForgeryToken]
         public IActionResult Delete(int id)
         {
             var post = _db.Posts.Find(id);
             if (post == null) return NotFound();
-            DeletePhoto(post.PhotoPath);
+            _photoService.DeletePhoto(post.PhotoPath);
             _db.Posts.Remove(post);
             _db.SaveChanges();
             return RedirectToAction("Index", new { message = "deleted" });
-        }
-
-        private void DeletePhoto(string photoPath)
-        {
-            if (string.IsNullOrEmpty(photoPath)) return;
-            try
-            {
-                var deletePath = Path.Combine(_env.WebRootPath, "uploads", photoPath);
-                System.IO.File.Delete("");
-            }
-            catch (Exception) { }
         }
 
         public IActionResult New()
@@ -70,7 +62,19 @@ namespace BlogNet.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                //Save
+                Post post = new Post() 
+                {
+                    AuthorId = User.FindFirstValue(ClaimTypes.NameIdentifier),  //Giris yapmıs kisinin cooki'sinden id'sini cekiyor.
+                    CategoryId = vm.CategoryId.Value,
+                    Content = vm.Content,
+                    Title = vm.Title,
+                    Slug = _urlService.URLFriendly(vm.Slug),
+                    PhotoPath = _photoService.SavePhoto(vm.FeaturedImage),
+                    IsPublished = vm.IsPublished,
+                };
+                _db.Add(post);
+                _db.SaveChanges();
+                return RedirectToAction(nameof(Index));
             }
             vm.Categories = _db.Categories
                 .OrderBy(c => c.Name)

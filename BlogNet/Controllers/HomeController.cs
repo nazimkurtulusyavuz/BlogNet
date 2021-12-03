@@ -29,7 +29,7 @@ namespace BlogNet.Controllers
         public IActionResult Index(string slug, string q, int pn = 1)
         {
             ViewBag.Slug = slug;
-            IQueryable<Post> posts = _context.Posts;
+            IQueryable<Post> posts = _context.Posts.Where(p => p.IsPublished);
             Category category = null;
             if (!string.IsNullOrEmpty(slug))
             {
