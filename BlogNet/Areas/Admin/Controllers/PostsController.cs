@@ -121,7 +121,7 @@ namespace BlogNet.Areas.Admin.Controllers
                 post.ModifiedTime = DateTime.Now;
                 //_db.Update(post);  //Gerek yok cunku SaveChanges deyınce db uzerınden cektıgımız nesnelerı izliyor.
                 _db.SaveChanges();
-
+ 
                 return RedirectToAction(nameof(Index));
             }
             vm.Categories = _db.Categories
