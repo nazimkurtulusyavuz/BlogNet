@@ -37,6 +37,8 @@ namespace BlogNet.Data
 
         public Category Category { get; set; }
 
+        public ICollection<Comment> Comments { get; set; }
+
 
     }
 }

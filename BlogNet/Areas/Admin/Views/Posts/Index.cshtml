@@ -1,7 +1,5 @@
 ﻿@model List<Post>
-@{
-    ViewData["Title"] = "Posts";
-}
+@{ ViewData["Title"] = "Posts"; }
 
 <div class="card">
     <div class="card-body">
@@ -20,23 +18,23 @@
             <tbody>
                 @foreach (Post post in Model)
                 {
-                    <tr>
-                        <td>@post.Id</td>
-                        <td>@{ await ShowPhoto(post.PhotoPath); }</td>
-                        <td>@post.Title</td>
-                        <td>@post.CreatedTime.ToShortDateString()</td>
-                        <td>@post.IsPublished</td>
-                        <td>@post.Category.Name</td>
-                        <td class="text-center">
-                            <a asp-controller="Posts" asp-action="Edit" asp-route-id="@post.Id" class="btn btn-info btn-sm">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                            <a href="#" data-delete-id="@post.Id" data-title="@post.Title" data-toggle="modal" data-target="#deleteModal" class="btn btn-danger btn-sm ml-1">
-                                <i class="fas fa-trash"></i>
-                            </a>
-                        </td>
-                    </tr>
-                 }
+    <tr>
+        <td>@post.Id</td>
+        <td>@{ await ShowPhoto(post.PhotoPath); }</td>
+        <td>@post.Title</td>
+        <td>@post.CreatedTime.ToShortDateString()</td>
+        <td>@post.IsPublished</td>
+        <td>@post.Category.Name</td>
+        <td class="text-center">
+            <a asp-controller="Posts" asp-action="Edit" asp-route-id="@post.Id" class="btn btn-info btn-sm">
+                <i class="fas fa-edit"></i>
+            </a>
+            <a href="#" data-delete-id="@post.Id" data-title="@post.Title" data-toggle="modal" data-target="#deleteModal" class="btn btn-danger btn-sm ml-1">
+                <i class="fas fa-trash"></i>
+            </a>
+        </td>
+    </tr>
+}
             </tbody>
         </table>
     </div>
@@ -69,10 +67,10 @@
 @section Scripts {
     <script>
         @{ var message = Context.Request.Query["message"];}
-        @if(Context.Request.Query["message"].Count > 0)
-        {
-            <text>toastr.success("The post has been deleted successfully.");</text>
-        }
+            @if(Context.Request.Query["message"].Count > 0)
+            {
+                <text>toastr.success("The post has been deleted successfully.");</text>
+            }
         $("#tblPosts").DataTable({
             autoWidth: false,
             responsive: true,
@@ -89,9 +87,8 @@
     </script>
 }
 @{ async Task ShowPhoto(string path)
-{
-   if (!string.IsNullOrEmpty(path))
-{
-    <img src="~/uploads/@path" width="100" alt="image" /> }
-}
-}
+    {
+        if (!string.IsNullOrEmpty(path))
+        {
+<img src="~/uploads/@path" width="100" alt="image" /> }
+            } }

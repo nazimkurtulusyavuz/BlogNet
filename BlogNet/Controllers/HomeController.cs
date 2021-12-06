@@ -1,5 +1,6 @@
 ﻿using BlogNet.Data;
 using BlogNet.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -7,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace BlogNet.Controllers
@@ -17,19 +19,18 @@ namespace BlogNet.Controllers
         private readonly ApplicationDbContext _context;
         private const int POSTS_PER_PAGE = 3;
 
-
         public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
         {
             _logger = logger;
             _context = context;
         }
 
-        [Route("c/{slug}", Name = "IndexWithSlug")]
+        [Route("c/{slug}")]
         [Route("")]
         public IActionResult Index(string slug, string q, int pn = 1)
         {
             ViewBag.Slug = slug;
-            IQueryable<Post> posts = _context.Posts.Where(p => p.IsPublished);
+            IQueryable<Post> posts = _context.Posts.Where(x => x.IsPublished);
             Category category = null;
             if (!string.IsNullOrEmpty(slug))
             {
@@ -44,31 +45,31 @@ namespace BlogNet.Controllers
 
             int totalItems = posts.Count();
             int totalPages = (int)Math.Ceiling((decimal)totalItems / POSTS_PER_PAGE);
-            posts = posts.OrderByDescending(x => x.CreatedTime).Skip((pn - 1) * POSTS_PER_PAGE).Take(POSTS_PER_PAGE);
-
+            posts = posts
+                .OrderByDescending(x => x.CreatedTime)
+                .Skip((pn - 1) * POSTS_PER_PAGE).Take(POSTS_PER_PAGE);
             var postsList = posts.ToList();
 
             var vm = new HomeViewModel()
             {
                 Category = category,
                 Posts = postsList,
-
                 PaginationInfo = new PaginationViewModel()
                 {
                     CurrentPage = pn,
                     HasNewer = pn > 1,
                     HasOlder = pn < totalPages,
-                    ItemsOnPage = postsList.Count(),
+                    ItemsOnPage = postsList.Count,
                     TotalItems = totalItems,
                     TotalPages = totalPages,
                     ItemsPerPage = POSTS_PER_PAGE,
-                    ResultsStart = (pn-1) * POSTS_PER_PAGE + 1,
-                    ResultsEnd = (pn - 1) * POSTS_PER_PAGE + postsList.Count()
+                    ResultsStart = (pn - 1) * POSTS_PER_PAGE + 1,
+                    ResultsEnd = (pn - 1) * POSTS_PER_PAGE + postsList.Count
                 },
                 SearchCriteria = q
             };
-            return View(vm);
 
+            return View(vm);
         }
 
         [Route("p/{slug}")]
@@ -76,6 +77,11 @@ namespace BlogNet.Controllers
         {
             return View(_context.Posts
                 .Include(x => x.Category)
+                .Include(x => x.Comments)
+                    .ThenInclude(x => x.Author)
+                .Include(x => x.Comments)
+                    .ThenInclude(x => x.Children)
+                        .ThenInclude(x => x.Author)
                 .FirstOrDefault(x => x.Slug == slug));
         }
 
@@ -88,6 +94,26 @@ namespace BlogNet.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        [HttpPost, Authorize]
+        public IActionResult Comment(int postId, string content, int? parentId, string slug)
+        {
+            content = content.Trim();
+            if (content == "") return BadRequest();
+
+            _context.Add(new Comment()
+            {
+                AuthorId = User.FindFirstValue(ClaimTypes.NameIdentifier),
+                CreatedTime = DateTime.Now,
+                ParentId = parentId,
+                PostId = postId,
+                Content = content,
+                IsPublished = true,
+            });
+            _context.SaveChanges();
+
+            return RedirectToAction("ShowPost", new { slug, message = "received" });
         }
     }
 }
