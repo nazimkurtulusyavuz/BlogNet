@@ -141,7 +141,7 @@ namespace BlogNet.Data.Migrations
 
                     b.HasIndex("PostId");
 
-                    b.ToTable("Comment");
+                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("BlogNet.Data.Post", b =>

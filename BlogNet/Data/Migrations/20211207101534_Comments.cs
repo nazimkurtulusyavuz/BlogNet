@@ -8,7 +8,7 @@ namespace BlogNet.Data.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Comment",
+                name: "Comments",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -22,21 +22,21 @@ namespace BlogNet.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Comment", x => x.Id);
+                    table.PrimaryKey("PK_Comments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Comment_AspNetUsers_AuthorId",
+                        name: "FK_Comments_AspNetUsers_AuthorId",
                         column: x => x.AuthorId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Comment_Comment_ParentId",
+                        name: "FK_Comments_Comments_ParentId",
                         column: x => x.ParentId,
-                        principalTable: "Comment",
+                        principalTable: "Comments",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Comment_Posts_PostId",
+                        name: "FK_Comments_Posts_PostId",
                         column: x => x.PostId,
                         principalTable: "Posts",
                         principalColumn: "Id",
@@ -44,25 +44,25 @@ namespace BlogNet.Data.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comment_AuthorId",
-                table: "Comment",
+                name: "IX_Comments_AuthorId",
+                table: "Comments",
                 column: "AuthorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comment_ParentId",
-                table: "Comment",
+                name: "IX_Comments_ParentId",
+                table: "Comments",
                 column: "ParentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comment_PostId",
-                table: "Comment",
+                name: "IX_Comments_PostId",
+                table: "Comments",
                 column: "PostId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Comment");
+                name: "Comments");
         }
     }
 }

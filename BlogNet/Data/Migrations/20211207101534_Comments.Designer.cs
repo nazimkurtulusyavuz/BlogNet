@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlogNet.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211206084843_Comments")]
+    [Migration("20211207101534_Comments")]
     partial class Comments
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -143,7 +143,7 @@ namespace BlogNet.Data.Migrations
 
                     b.HasIndex("PostId");
 
-                    b.ToTable("Comment");
+                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("BlogNet.Data.Post", b =>

@@ -6,6 +6,7 @@
     <meta name="description" content="A blog application developed in .NET" />
     <meta name="author" content="Yiğit Hacıefendioğlu" />
     <title>BlogNet - @ViewData["Title"]</title>
+    <link href="~/lib/font-awesome/css/all.min.css" rel="stylesheet" />
     <link href="~/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
     <link href="~/css/site.css" rel="stylesheet" />
     @await RenderSectionAsync("Styles", false)
@@ -67,6 +68,8 @@
     </footer>
     <!-- Bootstrap core JS-->
     <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <!-- Core theme JS-->
     <script src="~/js/site.js"></script>
     @await RenderSectionAsync("Scripts", false)
