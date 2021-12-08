@@ -57,7 +57,7 @@
                 </form>
 
             }
-            @foreach (Comment comment in Model.Comments.Where(x => x.ParentId == null))
+            @foreach (Comment comment in Model.Comments.Where(x => x.ParentId == null && x.IsPublished))
             {
                 <!-- Comment with nested comments-->
                 <div class="d-flex mb-4">
@@ -78,7 +78,7 @@
                         }
 
 
-                        @foreach (Comment subcomment in comment.Children)
+                        @foreach (Comment subcomment in comment.Children.Where(x => x.IsPublished))
                         {
                             <!-- Child comment-->
                             <div class="d-flex mt-4">

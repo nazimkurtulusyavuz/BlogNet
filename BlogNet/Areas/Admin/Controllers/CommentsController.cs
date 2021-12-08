@@ -21,5 +21,16 @@ namespace BlogNet.Areas.Admin.Controllers
         {
             return View(_db.Comments.Include(x => x.Author).OrderByDescending(x => x.CreatedTime).ToList());
         }
+
+        [HttpPost]
+        public IActionResult SetStatus(int commentId, bool isPublished)
+        {
+            Comment comment = _db.Comments.Find(commentId);
+            if (comment == null) return NotFound();
+            comment.IsPublished = isPublished;
+            _db.SaveChanges();
+            //return new StatusCodeResult(200);  //Alttaki ile aynı 
+            return Ok();
+        }
     }
 }
